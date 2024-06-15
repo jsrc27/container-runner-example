@@ -11,12 +11,13 @@ You can build this container with a simple `docker build -t <name> .`
 Here is the standard `docker run` command to run this container:
 
 ```
-docker run -d -it --rm -v $(pwd):/workdir --workdir=/workdir --env REPO=<REPO> --env ACCESS_TOKEN=<ACCESS_TOKEN> --name runner <container image name> start.sh
+docker run -d -it --rm -v $(pwd):/workdir --workdir=/workdir -v <OSTREE_REPO>:/ostree --env REPO=<REPO> --env ACCESS_TOKEN=<ACCESS_TOKEN> --name runner <container image name> start.sh
 ```
 
 * REPO: This is the repository for which you want the runner added to. For example for repo `https://github.com/foo/bar`, you want to set `REPO` to `foo/bar`.
 * ACCESS_TOKEN: This is a token that has access to the "registration-token" api endpoint for whatever repo or organization you want to add this runner to. See [here](https://docs.github.com/en/rest/actions/self-hosted-runners?apiVersion=2022-11-28#create-a-registration-token-for-a-repository) for more info.
 * This container has a bind-mount to `/workdir` in the container. This is so the build output from the Yocto build will also be available on the host system should the container suddenly exit. Make sure your Github Actions are configured to use the same working-directory so that the Yocto build is performed in the expected location.
+* OSTREE_REPO: This should be a path to an ostree repository. The pipeline will promote the ostree from the Yocto build to this "master" ostree repository for further CI/CD.
 
 If successful you should see output like this in the container logs:
 

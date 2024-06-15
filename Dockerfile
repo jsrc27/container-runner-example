@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install --no-install-recommends --no-install-sugge
     gir1.2-ostree-1.0 \
     jq \
     unzip \
+    ostree \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > /bin/repo && chmod a+x /bin/repo
@@ -33,5 +34,8 @@ COPY start.sh /usr/bin/
 # Install AWS CLI tool
 RUN curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip && ./aws/install && rm -rf awscliv2.zip ./aws
+
+# OSTree promotion script
+COPY ostree-repo-promotion.py /usr/bin
 
 USER usersetup
